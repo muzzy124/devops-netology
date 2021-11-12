@@ -77,3 +77,4 @@ git log --oneline -S'func synchronizedWriters' --pretty=format:'%h %an %ae'
 bdfea50cc James Bardin j.bardin@gmail.com  
 5ac311e2a Martin Atkins mart@degeneration.co.uk  
 отсюда автор Martin Atkins mart@degeneration.co.uk
+
