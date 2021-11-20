@@ -42,13 +42,75 @@ systemd с pid 1
 
 6. Получится ли вывести находясь в графическом режиме данные из PTY в какой-либо из эмуляторов TTY? Сможете ли вы наблюдать выводимые данные?
 
+получится, если переключиться в контекст tty (например комбинацией типа ctrl-alt-f3 и т.п.)
+
 7. Выполните команду bash 5>&1. К чему она приведет? Что будет, если вы выполните echo netology > /proc/$$/fd/5? Почему так происходит?
+
+bash 5>$1 создает декскриптор с номером 5 и отправляет его в stdout  
+echo netology > /proc/$$/fd/5 передаст 'netology' в дескриптор 5, который уже перенаправлен в stdout предыдущей командой  
+поэтому результатом выполнения второй команды будет netology:
+
+    vagrant@vagrant:~$ bash 5>&1
+    vagrant@vagrant:~$ echo netology > /proc/$$/fd/5
+    netology
 
 8. Получится ли в качестве входного потока для pipe использовать только stderr команды, не потеряв при этом отображение stdout на pty? Напоминаем: по умолчанию через pipe передается только stdout команды слева от | на stdin команды справа. Это можно сделать, поменяв стандартные потоки местами через промежуточный новый дескриптор, который вы научились создавать в предыдущем вопросе.
 
+
+    vagrant@vagrant:~$ ls
+    1234.txt  123.txt  history  temp  terraform
+    vagrant@vagrant:~$ cat 12345.txt
+    cat: 12345.txt: No such file or directory
+    vagrant@vagrant:~$ cat 12345.txt 111>&2 2>&1 1>&111 | grep 'No such'
+    cat: 12345.txt: No such file or directory
+    vagrant@vagrant:~$ cat 12345.txt 111>&2 2>&1 1>&111 | grep 'No such' -c
+    1
+
+где:  
+111>&2 - перенаправление дескриптор 111 в stderr  
+2>&1  - перенаправление stderr в stdout  
+1>&111 - перенаправление stdout в дескриптор 111
+
 9. Что выведет команда cat /proc/$$/environ? Как еще можно получить аналогичный по содержанию вывод?
 
+вывод переменных окружения, аналогично можно запустить printenv
+
 10. Используя man, опишите что доступно по адресам /proc/<PID>/cmdline, /proc/<PID>/exe.
+
+man proc, там ищем:
+
+    /proc/[pid]/cmdline
+                  This read-only file holds the complete command line for the process, unless the process  is  a  zombie.
+                  In  the  latter case, there is nothing in this file: that is, a read on this file will return 0 charac‐
+                  ters.  The command-line arguments appear in this file as a set  of  strings  separated  by  null  bytes
+                  ('\0'), with a further null byte after the last string.
+    полная командная строка процесса (если он только не зомби)  
+    например для процесса cron с pid 822
+    vagrant@vagrant:~$ sudo cat /proc/822/cmdline
+    /usr/sbin/cron-f
+    
+    /proc/[pid]/exe
+                  Under  Linux 2.2 and later, this file is a symbolic link containing the actual pathname of the executed
+                  command.  This symbolic link can be dereferenced normally; attempting to open it  will  open  the  exe‐
+                  cutable.   You  can  even type /proc/[pid]/exe to run another copy of the same executable that is being
+                  run by process [pid].  If the pathname has been unlinked, the symbolic link  will  contain  the  string
+                  '(deleted)'  appended  to the original pathname.  In a multithreaded process, the contents of this sym‐
+                  bolic link are not  available  if  the  main  thread  has  already  terminated  (typically  by  calling
+                  pthread_exit(3)).
+    
+                  Permission  to dereference or read (readlink(2)) this symbolic link is governed by a ptrace access mode
+                  PTRACE_MODE_READ_FSCREDS check; see ptrace(2).
+    
+                  Under Linux 2.0 and earlier, /proc/[pid]/exe is a pointer to the binary which was executed, and appears
+                  as a symbolic link.  A readlink(2) call on this file under Linux 2.0 returns a string in the format:
+    
+                      [device]:inode
+    
+                  For example, [0301]:1502 would be inode 1502 on device major 03 (IDE, MFM, etc. drives) minor 01 (first
+                  partition on the first drive).
+    
+                  find(1) with the -inum option can be used to locate the file.
+    это файл с символьной ссылкой, содержащей путь к исполняемой команде 
 
 11. Узнайте, какую наиболее старшую версию набора инструкций SSE поддерживает ваш процессор с помощью /proc/cpuinfo.
 
