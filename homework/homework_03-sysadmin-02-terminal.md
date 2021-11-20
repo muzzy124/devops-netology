@@ -58,6 +58,8 @@ sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx rdrand hypervisor lahf_lm abm 3d
 
 делаем вывод, что максимальный набор инструкций sse это **sse4_2**
 
+
+
 12. При открытии нового окна терминала и vagrant ssh создается новая сессия и выделяется pty. Это можно подтвердить командой tty, которая упоминалась в лекции 3.2. Однако:
 
 vagrant@netology1:~$ ssh localhost 'tty'
