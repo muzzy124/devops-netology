@@ -239,4 +239,4 @@
     4597    4597 R+   ps  
     vagrant@vagrant:~$ ps -eo pid,tid,stat,comm | grep S -c
     54
-    и т.д.
+    и т.д.  
