@@ -77,15 +77,71 @@
    После успешной перезагрузки в браузере *на своем ПК* (не в виртуальной машине) вы должны суметь зайти
    на `localhost:19999`. Ознакомьтесь с метриками, которые по умолчанию собираются Netdata и с комментариями, которые
    даны к этим метрикам.
-
 ```
     Ответ:
-    ![img_2.png](img_2.png)
 ```
+   ![img_2.png](img_2.png)
+
 4. Можно ли по выводу `dmesg` понять, осознает ли ОС, что загружена не на настоящем оборудовании, а на системе
    виртуализации?
+```
+    Ответ:
+    определить можно разными способами, например
+    
+      vagrant@vagrant:~$ dmesg | grep -i virtual
+      [    0.000000] DMI: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+      [    0.000000] CPU MTRRs all blank - virtualized system.
+      [    0.000000] Booting paravirtualized kernel on bare hardware
+      [    3.575666] systemd[1]: Detected virtualization oracle.
+    или 
+      vagrant@vagrant:~$ dmesg | grep vbox
+      [    1.791537] vboxvideo: loading out-of-tree module taints kernel.
+      [    1.791552] vboxvideo: module verification failed: signature and/or required key missing - tainting kernel
+      [    1.793149] vboxvideo: loading version 6.1.28 r147628
+      [    1.857426] fbcon: vboxvideodrmfb (fb0) is primary device
+      [    1.922421] vboxvideo 0000:00:02.0: fb0: vboxvideodrmfb frame buffer device
+      [    1.936321] [drm] Initialized vboxvideo 1.0.0 20130823 for 0000:00:02.0 on minor 0
+      [    5.155245] vboxguest: Successfully loaded version 6.1.28 r147628
+      [    5.155285] vboxguest: misc device minor 58, IRQ 20, I/O port d020, MMIO at 00000000e0400000 (size 0x400000)
+      [    5.155286] vboxguest: Successfully loaded version 6.1.28 r147628 (interface 0x00010004)
+      [    7.492759] vboxsf: g_fHostFeatures=0x8000000f g_fSfFeatures=0x1 g_uSfLastFunction=29
+      [    7.493397] *** VALIDATE vboxsf ***
+      [    7.493401] vboxsf: Successfully loaded version 6.1.28 r147628
+      [    7.493442] vboxsf: Successfully loaded version 6.1.28 r147628 on 5.4.0-80-generic SMP mod_unload modversions  (LINUX_VERSION_CODE=0x5047c)
+      [    7.506143] vboxsf: SHFL_FN_MAP_FOLDER failed for '/vagrant': share not found
+    и т.п.
+    у гипервизора есть свои определенные паттерны, виртуальные устройства, всякие addon tools и т.п.
+```
 5. Как настроен sysctl `fs.nr_open` на системе по-умолчанию? Узнайте, что означает этот параметр. Какой другой
    существующий лимит не позволит достичь такого числа (`ulimit --help`)?
+```
+   vagrant@vagrant:~$ sysctl fs.nr_open
+   fs.nr_open = 1048576
+   Этот параметр отвечает за максимальное количество файловых дескрипторов, которые может использовать процесс
+   максимальное значение ограничено сверху параметром ядра sysctl_nr_open_max (в x86-64 системе это 2147483584)
+   
+   по умолчанию:
+   vagrant@vagrant:~$ sysctl fs.nr_open
+   fs.nr_open = 1048576
+   
+   увеличиваем:
+   vagrant@vagrant:~$ sudo sysctl -w fs.nr_open=2147483585
+   sysctl: setting key "fs.nr_open": Invalid argument
+   vagrant@vagrant:~$ sudo sysctl -w fs.nr_open=2147483584
+   fs.nr_open = 2147483584
+   
+   командами ulimit -Hn и ulimit -Sn можно управлять количеством жесткого (H) и мягкого (S) лимита открытых файлов
+   при этом H лимит не даст увеличить S лимит, это и будет верхним ограничением
+   vagrant@vagrant:~$ ulimit -n
+   1024
+   vagrant@vagrant:~$ ulimit -Sn
+   1024
+   vagrant@vagrant:~$ ulimit -Hn
+   1024
+   
+   
+     
+```
 6. Запустите любой долгоживущий процесс (не `ls`, который отработает мгновенно, а, например, `sleep 1h`) в отдельном
    неймспейсе процессов; покажите, что ваш процесс работает под PID 1 через `nsenter`. Для простоты работайте в данном
    задании под root (`sudo -i`). Под обычным пользователем требуются дополнительные опции (`--map-root-user`) и т.д.
@@ -93,3 +149,18 @@
    Ubuntu 20.04 (**это важно, поведение в других ОС не проверялось**). Некоторое время все будет "плохо", после чего (
    минуты) – ОС должна стабилизироваться. Вызов `dmesg` расскажет, какой механизм помог автоматической стабилизации. Как
    настроен этот механизм по-умолчанию, и как изменить число процессов, которое можно создать в сессии?
+
+```
+   :(){ :|:& };: это скрипт, : - название функции, назовем ее func, в человекочитаемом виде:
+   func()
+   {
+      func | func &
+   };
+   func
+
+   т.е. скрипт запускает func, которая порождает еще две копии функции, и т.д.
+   в системе появляется куча процессов, пока не кончается номера pid
+   
+   ![img.png](img.png)
+   
+```
