@@ -166,6 +166,7 @@
    [ 9925.681352] cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/session-6.scope
    
    в netdata при этом
+   ```
    ![img.png](img.png)
    
-```
+
