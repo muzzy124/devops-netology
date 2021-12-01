@@ -56,13 +56,13 @@
 ```
 3. Ознакомьтесь с опциями node_exporter и выводом `/metrics` по-умолчанию. Приведите несколько опций, которые вы бы
    выбрали для базового мониторинга хоста по CPU, памяти, диску и сети.
-
-       Ответ:
-       --collector.cpu  
-       --collector.meminfo
-       --collector.netstat
-       --collector.filesystem
-
+```
+    Ответ:
+      --collector.cpu  
+      --collector.meminfo
+      --collector.netstat
+      --collector.filesystem
+```
 3. Установите в свою виртуальную машину [Netdata](https://github.com/netdata/netdata).
    Воспользуйтесь [готовыми пакетами](https://packagecloud.io/netdata/netdata/install) для
    установки (`sudo apt install -y netdata`). После успешной установки:
@@ -78,9 +78,10 @@
    на `localhost:19999`. Ознакомьтесь с метриками, которые по умолчанию собираются Netdata и с комментариями, которые
    даны к этим метрикам.
 
+```
        Ответ:
        ![img_1.png](img_1.png)
-
+```
 4. Можно ли по выводу `dmesg` понять, осознает ли ОС, что загружена не на настоящем оборудовании, а на системе
    виртуализации?
 5. Как настроен sysctl `fs.nr_open` на системе по-умолчанию? Узнайте, что означает этот параметр. Какой другой
