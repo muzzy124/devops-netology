@@ -39,11 +39,12 @@
       sudo systemctl enable node_exporter
   
       после перезагрузки видим, что служба node_exporter успешно запустилась
+      '''
       vagrant@vagrant:~$ systemctl status node_exporter
         ● node_exporter.service
            Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; vendor preset: enabled)
            Active: active (running)...
-  
+  ''' 
       node_exporter находится по адресам:
       http://localhost:9100/metrics (на госте)
       http://localhost:19100/metrics (на хосте)
