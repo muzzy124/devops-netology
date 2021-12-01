@@ -161,6 +161,11 @@
    т.е. скрипт запускает func, которая порождает еще две копии функции, и т.д.
    в системе появляется куча процессов, пока не кончается номера pid
    
+   система восстанавливается после этого (из dmesg):
+   [ 9887.589046] cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/session-1.scope
+   [ 9925.681352] cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/session-6.scope
+   
+   в netdata при этом
    ![img.png](img.png)
    
 ```
