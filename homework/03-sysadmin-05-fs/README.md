@@ -382,3 +382,4 @@ PS C:\HashiCorp\Vagrant\hw2> vagrant destroy
     default: Are you sure you want to destroy the 'default' VM? [y/N] ==> default: Destroying VM and associated drives...
 PS C:\HashiCorp\Vagrant\hw2>
 ```
+
