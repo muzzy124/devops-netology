@@ -40,6 +40,11 @@ root@CORE-I7:~# ip link
 протокол arp
 root@CORE-I7:~# ip neighbor
 172.21.176.1 dev eth0 lladdr 00:15:5d:ef:97:11 STALE
+
+в ipv6 - ndp (и то фактически он на базе icmpv6)
+apt install libndp-tools
+ndptools monitor или send
+
 ```
 3. Какая технология используется для разделения L2 коммутатора на несколько виртуальных сетей? Какой пакет и команды есть в Linux для этого? Приведите пример конфига.
 ```
