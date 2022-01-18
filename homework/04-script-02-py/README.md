@@ -43,12 +43,25 @@ for result in result_os.split('\n'):
 
 ### Ваш скрипт:
 ```python
-???
+#!/usr/bin/env python3
+
+import os
+
+bash_command = ["cd ~/devops-netology/homework", "git status"]
+result_os = os.popen(' && '.join(bash_command)).read()
+#is_change = False - зачем? убираем
+for result in result_os.split('\n'):
+    if result.find('modified') != -1:
+        #ниже добавляем полный путь к файлу, полученный через os.getcwd()
+        prepare_result = os.getcwd()+'/'+result.replace('\tmodified:   ', '')
+        print(prepare_result)
+        #break - прерывание цикла после первой итерации лишнее, убираем
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-???
+root@CORE-I7:~/devops-netology# python3 homework/04-script-02-py/example.py
+/root/devops-netology/04-script-02-py/example.py
 ```
 
 ## Обязательная задача 3
