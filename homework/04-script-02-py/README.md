@@ -69,12 +69,38 @@ root@CORE-I7:~/devops-netology# python3 homework/04-script-02-py/example.py
 
 ### Ваш скрипт:
 ```python
-???
+#!/usr/bin/env python3
+
+import os
+import sys
+
+if len(sys.argv)>=2:
+        bash_command = ["cd "+sys.argv[1], "git status"]
+else:
+        bash_command = ["git status 2>&1"]
+
+result_os = os.popen(' && '.join(bash_command)).read()
+
+for result in result_os.split('\n'):
+        if result.find('fatal') != -1:
+                print('В папке '+sys.argv[1]+' нет GIT репозитория')
+        if result.find('modified') != -1:
+                prepare_result = os.getcwd()+'/'+result.replace('\tmodified:   ', '')
+                print(prepare_result)
+        if result.find('nothing') != -1:
+                print('В папке '+sys.argv[1]+' нет измененных файлов')
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-???
+root@CORE-I7:~/devops-netology/homework/04-script-02-py# python3 example2.py
+/root/devops-netology/homework/04-script-02-py/example2.py
+root@CORE-I7:~/devops-netology/homework/04-script-02-py# python3 example2.py /home
+В папке /home нет измененных файлов
+root@CORE-I7:~/devops-netology/homework/04-script-02-py# python3 example2.py /lib
+В папке /lib нет GIT репозитория
+root@CORE-I7:~/devops-netology/homework/04-script-02-py# python3 example2.py /41246fsdfsd
+/bin/sh: 1: cd: can't cd to /41246fsdfsd
 ```
 
 ## Обязательная задача 4
@@ -82,12 +108,47 @@ root@CORE-I7:~/devops-netology# python3 homework/04-script-02-py/example.py
 
 ### Ваш скрипт:
 ```python
-???
+#!/usr/bin/env python3
+
+#добавляем поддержку сокетов и работы со временем для таймаутов
+import socket
+import time
+
+#формируем начальный список хостов и адресов через dict массив
+host_ip_list = {'drive.google.com':'192.168.2.2', 'mail.google.com':'192.168.2.3', 'google.com':'192.168.2.4'}
+
+#бесконечный цикл проверки
+while True :
+    #цикл по каждому хосту из массива
+    for host in host_ip_list:
+        #определяем текущий реальный айпи адрес хоста командой gethostbyname
+        ip = socket.gethostbyname(host)
+        #проверяем, совпадает ли текущий адрес хоста с адресом из массива
+        if ip != host_ip_list[host] :
+            #при несовпадении выводим ошибку, а также адрес из массива и текущий адрес
+            print('ERROR: '+host+' IP mismatch: '+host_ip_list[host]+' - '+ip)
+            #перезаписываем в массив текущий адрес хоста
+            host_ip_list[host] = ip
+        else :
+            #при совпадении выводим адрес хоста из массива
+            print(host+' - '+host_ip_list[host])
+        #таймаут для удобства отображения вывода
+        time.sleep(2)
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-???
+PS C:\Users\user\PycharmProjects\devops-netology\homework\04-script-02-py> C:/Users/user/PycharmProjects/devops-netol
+ogy/homework/04-script-02-py/iphostcheck.py
+ERROR: drive.google.com IP mismatch: 192.168.2.2 - 142.250.150.194
+ERROR: mail.google.com IP mismatch: 192.168.2.3 - 216.58.210.165
+ERROR: google.com IP mismatch: 192.168.2.4 - 74.125.131.138
+drive.google.com - 142.250.150.194
+ERROR: mail.google.com IP mismatch: 216.58.210.165 - 108.177.14.83
+ERROR: google.com IP mismatch: 74.125.131.138 - 216.58.209.174
+drive.google.com - 142.250.150.194
+mail.google.com - 108.177.14.83
+и т.д.
 ```
 
 ## Дополнительное задание (со звездочкой*) - необязательно к выполнению
