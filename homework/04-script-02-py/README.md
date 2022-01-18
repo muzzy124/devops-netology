@@ -115,7 +115,11 @@ import socket
 import time
 
 #формируем начальный список хостов и адресов через dict массив
-host_ip_list = {'drive.google.com':'192.168.2.2', 'mail.google.com':'192.168.2.3', 'google.com':'192.168.2.4'}
+host_ip_list = {
+    'drive.google.com':'192.168.2.2',
+    'mail.google.com':'192.168.2.3',
+    'google.com':'192.168.2.4'
+}
 
 #бесконечный цикл проверки
 while True :
